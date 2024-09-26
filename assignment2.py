@@ -1,6 +1,9 @@
 # %%
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier as RF
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 # %%
 TrainData = pd.read_csv('https://github.com/dustywhite7/Econ8310/raw/master/AssignmentData/assignment3.csv')
@@ -14,31 +17,20 @@ X = TrainData.drop(columns=['meal','id','DateTime'], axis=1)
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=42)
 
 # %%
-model = DecisionTreeClassifier(max_depth = 200, min_samples_leaf= 5)
 
-modelFit = model.fit(x_train,y_train )
+model = RF(n_estimators=200, n_jobs=-1, max_depth=200, random_state= 42)
+modelFit = model.fit(x_train,y_train)
 
-# %%
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
+# Test our model using the testing data
+predict = modelFit.predict(x_test)
+acc = accuracy_score(y_test, predict)
 
-pred_train = model.predict(x_train)
-pred_test = model.predict(x_test)
-
-
-print(100*accuracy_score(y_train, model.predict(x_train)))
-
-
-print(100*accuracy_score(y_test, model.predict(x_test)))
-
+print("Model accuracy is {}%.".format(acc*100))
 
 # %%
 TestData = pd.read_csv('https://github.com/dustywhite7/Econ8310/raw/master/AssignmentData/assignment3test.csv')
 xt = TestData.drop(columns = ['meal','id','DateTime'], axis =1)
 pred = model.predict(xt)
 pred
-
-# %%
-
 
 
